@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Libraries\CSV;
+use App\Repositories\SalaryDateRepository;
 
 class SalaryDateGenerate extends Command
 {
@@ -40,22 +42,30 @@ class SalaryDateGenerate extends Command
     {
         $this->info('Generation Started');
 
+        // Ask for user input of Months
         $months = $this->ask('How many months of Salary Dates from today (' . Carbon::now()->format('Y-m-d') . ') would you like to generate?');
 
+        // Check if months is numeric
         if(!is_numeric($months)) {
             $this->error('Month has not been specified');
         }
 
-        $file_path = storage_path('exports/salary-dates.csv'); 
+        $date_repository = new SalaryDateRepository();
 
-        if(file_exists($file_path)){
-            unlink($file_path);
-        }
+        // Go to date repository and generate date for month period
+        $dates = $date_repository->generateDatesForPeriod('months', $months);
 
-        $fp = fopen($file_path, 'w+');
+        // Call Generic repository for saving CSV with intended path in storage foler
+        $csv = new CSV();
+        $csv_data = $csv->arrayToCsv('exports/salary-dates.csv', $dates);
 
-        fwrite($fp, 'Test Data');
+        // Build headers for CLI output
+        $headers = ['period', 'basic_payment', 'bonus_payment'];
 
-        fclose($fp);
+        // Print to CLI
+        $this->table($headers, $dates);
+
+        // Report CSV is generated and finish
+        $this->info('CSV Generated');
     }
 }
