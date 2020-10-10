@@ -19,7 +19,7 @@ class SalaryDateGenerateTest extends TestCase
     {
   		$this->artisan('generate:salary-dates')
   			->expectsOutput('Generation Started')
-  			->expectsQuestion('How many months of Salary Dates from today (' . Carbon::now()->format('Y-m-d') . ') would you like to generate?', '12')
+  			->expectsQuestion('How many months of Salary Dates from today (' . Carbon::now()->format('Y-m-d') . ') would you like to generate?', 'Twelve')
   			// Put test here for looking at the results of the CSV, unsure what these will be just yet
   			->assertExitCode(0);
     }

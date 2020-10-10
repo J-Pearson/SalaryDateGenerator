@@ -42,6 +42,10 @@ class SalaryDateGenerate extends Command
 
         $months = $this->ask('How many months of Salary Dates from today (' . Carbon::now()->format('Y-m-d') . ') would you like to generate?');
 
+        if(!is_numeric($months)) {
+            $this->error('Month has not been specified');
+        }
+
         $file_path = storage_path('exports/salary-dates.csv'); 
 
         if(file_exists($file_path)){
