@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class SalaryDateGenerate extends Command
@@ -37,6 +38,20 @@ class SalaryDateGenerate extends Command
      */
     public function handle()
     {
-        return 0;
+        $this->info('Generation Started');
+
+        $months = $this->ask('How many months of Salary Dates from today (' . Carbon::now()->format('Y-m-d') . ') would you like to generate?');
+
+        $file_path = storage_path('exports/salary-dates.csv'); 
+
+        if(file_exists($file_path)){
+            unlink($file_path);
+        }
+
+        $fp = fopen($file_path, 'w+');
+
+        fwrite($fp, 'Test Data');
+
+        fclose($fp);
     }
 }
